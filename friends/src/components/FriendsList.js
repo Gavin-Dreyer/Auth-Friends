@@ -1,10 +1,12 @@
 import React from 'react'
+import Loader from 'react-loader-spinner'
 
 import { axiosWithAuth } from '../utils/axiosWithAuth'
 
 class FriendsList extends React.Component {
     state = {
-        friends: []
+        friends: [],
+        isFetching: false
     }
 
     componentDidMount() {
@@ -12,15 +14,25 @@ class FriendsList extends React.Component {
     }
 
     getData = () => {
+        this.setState({...this.state, isFetching: true})
         axiosWithAuth()
             .get('/api/friends')
-            .then(res => this.setState({friends: res.data}))
+            .then(res => this.setState({friends: res.data, isFetching: false}))
             .catch(err => console.log(err))
+
     }
 
     render() {
         return (
             <div>
+                <p>{this.state.isFetching ? <Loader
+                    type="Rings"
+                    color="#00BFFF"
+                    height={100}
+                    width={100}
+                    
+
+                /> : ''}</p>
                 {this.state.friends.map(item => (
                     <div className='data' key={item.id}>
                         <p>{item.name}</p>
